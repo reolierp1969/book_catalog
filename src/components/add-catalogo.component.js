@@ -129,7 +129,7 @@ export default class AddCatalogo extends Component {
       <div className="submit-form">
         {this.state.submitted ? (
           <div>
-            <h4>Su envio ha sido exitoso.  Excelente ejecución!</h4>
+            <h4>Su envio ha sido muy exitoso!</h4>
             <button className="btn btn-success" onClick={this.newCatalogo}>
               Add
             </button>
