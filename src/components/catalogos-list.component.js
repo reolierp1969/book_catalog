@@ -1,27 +1,29 @@
 import React, { Component } from "react";
-import TutorialDataService from "../services/tutorial.service";
+import CatalogoDataService from "../services/catalogo.service";
 import { Link } from "react-router-dom";
 
-export default class TutorialsList extends Component {
+
+
+export default class CatalogosList extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchTitle = this.onChangeSearchTitle.bind(this);
-    this.retrieveTutorials = this.retrieveTutorials.bind(this);
+    this.retrieveCatalogos = this.retrieveCatalogos.bind(this);
     this.refreshList = this.refreshList.bind(this);
-    this.setActiveTutorial = this.setActiveTutorial.bind(this);
-    this.removeAllTutorials = this.removeAllTutorials.bind(this);
+    this.setActiveCatalogo = this.setActiveCatalogo.bind(this);
+    this.removeAllCatalogos = this.removeAllCatalogos.bind(this);
     this.searchTitle = this.searchTitle.bind(this);
 
     this.state = {
-      tutorials: [],
-      currentTutorial: null,
+      catalogos: [],
+      currentCatalogo: null,
       currentIndex: -1,
       searchTitle: ""
     };
   }
 
   componentDidMount() {
-    this.retrieveTutorials();
+    this.retrieveCatalogos();
   }
 
   onChangeSearchTitle(e) {
@@ -32,11 +34,11 @@ export default class TutorialsList extends Component {
     });
   }
 
-  retrieveTutorials() {
-    TutorialDataService.getAll()
+  retrieveCatalogos() {
+    CatalogoDataService.getAll()
       .then(response => {
         this.setState({
-          tutorials: response.data
+          catalogos: response.data
         });
         console.log(response.data);
       })
@@ -46,22 +48,22 @@ export default class TutorialsList extends Component {
   }
 
   refreshList() {
-    this.retrieveTutorials();
+    this.retrieveCatalogos();
     this.setState({
-      currentTutorial: null,
+      currentCatalogo: null,
       currentIndex: -1
     });
   }
 
-  setActiveTutorial(tutorial, index) {
+  setActiveCatalogo(catalogo, index) {
     this.setState({
-      currentTutorial: tutorial,
+      currentCatalogo: catalogo,
       currentIndex: index
     });
   }
 
-  removeAllTutorials() {
-    TutorialDataService.deleteAll()
+  removeAllCatalogos() {
+    CatalogoDataService.deleteAll()
       .then(response => {
         console.log(response.data);
         this.refreshList();
@@ -73,14 +75,14 @@ export default class TutorialsList extends Component {
 
   searchTitle() {
     this.setState({
-      currentTutorial: null,
+      currentCatalogo: null,
       currentIndex: -1
     });
 
-    TutorialDataService.findByTitle(this.state.searchTitle)
+    CatalogoDataService.findByTitle(this.state.searchTitle)
       .then(response => {
         this.setState({
-          tutorials: response.data
+          catalogos: response.data
         });
         console.log(response.data);
       })
@@ -90,7 +92,7 @@ export default class TutorialsList extends Component {
   }
 
   render() {
-    const { searchTitle, tutorials, currentTutorial, currentIndex } = this.state;
+    const { searchTitle, catalogos, currentCatalogo, currentIndex } = this.state;
 
     return (
       <div className="list row">
@@ -115,56 +117,86 @@ export default class TutorialsList extends Component {
           </div>
         </div>
         <div className="col-md-6">
-          <h4>Tutorials List</h4>
+          <h4>Listado de libros</h4>
 
           <ul className="list-group">
-            {tutorials &&
-              tutorials.map((tutorial, index) => (
+            {catalogos &&
+              catalogos.map((catalogo, index) => (
                 <li
                   className={
                     "list-group-item " +
                     (index === currentIndex ? "active" : "")
                   }
-                  onClick={() => this.setActiveTutorial(tutorial, index)}
+                  onClick={() => this.setActiveCatalogo(catalogo, index)}
                   key={index}
                 >
-                  {tutorial.title}
+                  {catalogo.title}
                 </li>
               ))}
           </ul>
 
           <button
             className="m-3 btn btn-sm btn-danger"
-            onClick={this.removeAllTutorials}
+            onClick={this.removeAllCatalogos}
           >
             Remove All
           </button>
         </div>
         <div className="col-md-6">
-          {currentTutorial ? (
+          {currentCatalogo ? (
             <div>
-              <h4>Tutorial</h4>
+              <h4>Libro</h4>
+              <div>
+                <label>
+                  <strong>Isbn:</strong>
+                </label>{" "}
+                {currentCatalogo.isbn}
+              </div>
+              <div>
+                <label>
+                  <strong>Gender:</strong>
+                </label>{" "}
+                {currentCatalogo.gender}
+              </div>
               <div>
                 <label>
                   <strong>Title:</strong>
                 </label>{" "}
-                {currentTutorial.title}
+                {currentCatalogo.title}
+              </div>
+              <div>
+                <label>
+                  <strong>Author:</strong>
+                </label>{" "}
+                {currentCatalogo.author}
               </div>
               <div>
                 <label>
                   <strong>Description:</strong>
                 </label>{" "}
-                {currentTutorial.description}
+                {currentCatalogo.description}
+              </div>
+              <div>
+                <label>
+                  <strong>Editorial:</strong>
+                </label>{" "}
+                {currentCatalogo.editorial}
+              </div>
+              <div>
+                <label>
+                  <strong>Year:</strong>
+                </label>{" "}
+                {currentCatalogo.year}
               </div>
               <div>
                 <label>
                   <strong>Status:</strong>
                 </label>{" "}
-                {currentTutorial.published ? "Published" : "Pending"}
+                {currentCatalogo.published ? "Published" : "Pending"}
               </div>
 
               <Link
-                to={"/tutorials/" + currentTutorial.id}
+                to={"/catalogos/" + currentCatalogo.id}
                 className="badge badge-warning"
               >
                 Edit
@@ -173,7 +205,7 @@ export default class TutorialsList extends Component {
           ) : (
             <div>
               <br />
-              <p>Please click on a Tutorial...</p>
+              <p>Haga click sobre un libro...</p>
             </div>
           )}
         </div>
